@@ -1,0 +1,47 @@
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-3-2012  9:26:34         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ; END2.ASM
+                      00002 
+                      00003 ; This file tests legal usage of the END directive.
+                      00004 
+                      00005         LIST    P=16C54, R=HEX
+                      00006 
+                      00007 ;;;; Begin: Changed in gputils
+                      00008 ;;;;    I = 1
+  00000001            00009 I = 1
+                      00010 ;;;; End: Changed in gputils
+                      00011 
+0000   0001 0002 0003 00012         DATA    1, 2, 3
+                      00013 
+                      00014         IF I == 1
+Warning[212]: Expected (ENDIF)
+                      00015            END
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-3-2012  9:26:34         PAGE  2
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+I                                 00000001
+__16C54                           00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXX------------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:     3
+Program Memory Words Free:   509
+
+
+Errors   :     0
+Warnings :     1 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

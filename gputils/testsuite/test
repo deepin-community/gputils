@@ -1,0 +1,310 @@
+#!/bin/bash
+
+#   tests gpdasm
+#   Copyright (C) 2001, 2002, 2003
+#   Craig Franklin
+#
+# This file is part of gputils.
+#
+# gputils is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# gputils is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with gputils; see the file COPYING.  If not, write to
+# the Free Software Foundation, 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.  
+
+# Defines
+TESTDIR=./test
+GPDASMBIN=../gpdasm
+_GPDASMFLAGS="-n -s"
+GPDASMFLAGS=""
+
+GPASMBIN=../../gpasm/gpasm
+GPASMFLAGS="-q -I`pwd`/../../header -f"
+
+# General functions
+
+function testfailed() {
+  echo "TEST FAILED $1"
+  exit 1
+}
+
+function binexists() {
+  # Test syntax.
+  if (($# == 0)); then
+    echo "Usage: binexists {program}"
+    return 1
+  fi
+  echo "Testing for $1:"
+  if [ ! -e $1 ]; then
+    echo "$1 not found, aborting."
+    return 1
+  else
+    $1 -v
+    echo -e "Executable found.\n"
+    return 0
+  fi
+}
+
+function printbanner() {
+  # Test syntax.
+  if (($# == 0)); then
+    echo "Usage: printbanner {message}"
+    return 1
+  fi
+  echo -e "+----------------------------------------------------------
+|   $1
++----------------------------------------------------------\n"
+  return 0
+}
+
+function run_test() {
+  local mcu
+
+  # Test syntax.
+  if (($# < 1)); then
+    echo "Usage: run_test <test file> [gpasm flags]"
+    return 1
+  fi
+
+  echo "$GPASMBIN $GPASMFLAGS $2 $1.asm"
+  ../../$GPASMBIN $GPASMFLAGS $2 $1.asm || testfailed "$GPASMBIN $GPASMFLAGS $2 $1.asm"
+
+  mcu=`sed -n '/list/Ip' $1.asm | sed -r 's/^.*p=(.*)$/\1/i'`
+
+  if [ -z $mcu ]; then
+    mcu=`sed -n '/processor/Ip' $1.asm | sed -r 's/^\s*\S+\s+(\w+)\s*$/\1/i' | tr "[:upper:]" "[:lower:]"`
+  fi
+
+  mcu=${mcu/pic/}
+  mcu=${mcu/p/}
+
+  echo "$GPDASMBIN -p $mcu $GPDASMFLAGS $1.hex > $1.dis"
+  ../../$GPDASMBIN -p $mcu $GPDASMFLAGS $1.hex > $1.dis || testfailed "$GPDASMBIN -p $mcu $GPDASMFLAGS $1.hex"
+  echo "$GPASMBIN $GPASMFLAGS $2 $1.dis -o $1.dis.hex"
+  ../../$GPASMBIN $GPASMFLAGS $2 $1.dis -o $1.dis.hex || testfailed "$GPASMBIN $GPASMFLAGS $2 $1.dis -o $1.dis.hex"
+  diff -us $1.hex $1.dis.hex || testfailed ""
+  return 0
+}
+
+function all_test() {
+  printbanner "Start of gpdasm testing" 
+  # Test for executable.
+  binexists $GPDASMBIN
+  RETVAL=$?
+  (($RETVAL == 1)) && exit 1
+  # Testing gpdasm requires gpasm.
+  binexists $GPASMBIN
+  RETVAL=$?
+  (($RETVAL == 1)) && exit 1
+
+  # Create the test directory if it doesn't already exist.
+  cd gpdasm.project
+  [ -d $TESTDIR ] || mkdir $TESTDIR || exit 1
+  # Copy the test files to the test directory.
+  cd $TESTDIR
+  # Clean the directory.
+  rm -Rf *
+  cp ../*.asm ../*.ulist .
+
+  printbanner "Testing 12 bit core"
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test op12
+  echo -e "12 bit core passed.\n"
+
+  printbanner "Testing 12 bit core (idlocs a)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs12a
+  echo -e "12 bit core idlocs-a passed.\n"
+
+  printbanner "Testing 12 bit core (idlocs b)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs12b
+  echo -e "12 bit core idlocs-b passed.\n"
+
+  printbanner "Testing enhanced 12 bit core 1."
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test op12e_old_conf
+  echo -e "Enhanced 12 bit core passed.\n"
+
+  printbanner "Testing enhanced 12 bit core 2."
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test op12e_new_conf
+  echo -e "Enhanced 12 bit core passed.\n"
+
+  printbanner "Testing sx core"
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test sx
+  echo -e "sx core passed.\n"
+
+  printbanner "Testing 14 bit core 1."
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test op14
+  echo -e "14 bit core passed.\n"
+
+  printbanner "Testing 14 bit core 2."
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test op14_old_conf
+  echo -e "14 bit core passed.\n"
+
+  printbanner "Testing 14 bit core 3."
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test op14_new_conf
+  echo -e "14 bit core passed.\n"
+
+  printbanner "Testing 14 bit core idlocs-a"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs14a
+  echo -e "14 bit core idlocs-a passed.\n"
+
+  printbanner "Testing 14 bit core idlocs-b"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs14b
+  echo -e "14 bit core idlocs-b passed.\n"
+
+  printbanner "Testing 14 bit core EEPROM 0."
+  GPDASMFLAGS="$_GPDASMFLAGS -k eeprom14_0.ulist"
+  run_test eeprom14_0
+  echo -e "14 bit core EEPROM 0 passed.\n"
+
+  printbanner "Testing 14 bit core EEPROM 1."
+  GPDASMFLAGS="$_GPDASMFLAGS -k eeprom14_1.ulist"
+  run_test eeprom14_1
+  echo -e "14 bit core EEPROM 1 passed.\n"
+
+  printbanner "Testing 14 bit core EEPROM 2."
+  GPDASMFLAGS="$_GPDASMFLAGS -k eeprom14_2.ulist"
+  run_test eeprom14_2
+  echo -e "14 bit core EEPROM 1 passed.\n"
+
+  printbanner "Testing enhanced 14 bit core 1."
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test op14e_old_conf
+  echo -e "Enhanced 14 bit core passed.\n"
+
+  printbanner "Testing enhanced 14 bit core 2."
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test op14e_new_conf
+  echo -e "Enhanced 14 bit core passed.\n"
+
+  printbanner "Testing enhanced 14 bit core EEPROM."
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test eeprom14e
+  echo -e "14 bit enhanced core EEPROM passed.\n"
+
+  printbanner "Testing 16 bit core"
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test op16
+  echo -e "16 bit core passed.\n"
+
+  printbanner "Testing extended 16 bit core 1."
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test op16e
+  echo -e "Extended 16 bit core passed.\n"
+
+  printbanner "Testing extended 16 bit core 2."
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test op16e_old_conf
+  echo -e "Extended 16 bit core passed.\n"
+
+  printbanner "Testing extended 16 bit core 3."
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test op16e_new_conf
+  echo -e "Extended 16 bit core passed.\n"
+
+  printbanner "Testing extended 16 bit core (idlocs-1)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs16e1
+  echo -e "Extended 16 bit core idlocs-1 passed.\n"
+
+  printbanner "Testing extended 16 bit core (idlocs-2)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs16e2
+  echo -e "Extended 16 bit core idlocs-2 passed.\n"
+
+  printbanner "Testing extended 16 bit core (idlocs-3)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs16e3
+  echo -e "Extended 16 bit core idlocs-3 passed.\n"
+
+  printbanner "Testing extended 16 bit core (idlocs-4)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs16e4
+  echo -e "Extended 16 bit core idlocs-4 passed.\n"
+
+  printbanner "Testing extended 16 bit core (idlocs-5)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs16e5
+  echo -e "Extended 16 bit core idlocs-5 passed.\n"
+
+  printbanner "Testing extended 16 bit core (idlocs-6)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs16e6
+  echo -e "Extended 16 bit core idlocs-6 passed.\n"
+
+  printbanner "Testing extended 16 bit core (idlocs-7)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs16e7
+  echo -e "Extended 16 bit core idlocs-7 passed.\n"
+
+  printbanner "Testing extended 16 bit core (idlocs-8)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs16e8
+  echo -e "Extended 16 bit core idlocs-8 passed.\n"
+
+  printbanner "Testing extended 16 bit core (idlocs-9)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs16e9
+  echo -e "Extended 16 bit core idlocs-9 passed.\n"
+
+  printbanner "Testing extended 16 bit core (idlocs-10)"
+  GPDASMFLAGS="$_GPDASMFLAGS -o"
+  run_test idlocs16e10
+  echo -e "Extended 16 bit core idlocs-10 passed.\n"
+
+  printbanner "Testing extended 16 bit core EEPROM."
+  GPDASMFLAGS=$_GPDASMFLAGS
+  run_test eeprom16e
+  echo -e "16 bit extended core EEPROM passed.\n"
+
+  printbanner "Gpdasm testing sucessful."
+}
+
+ACTION="test"
+
+for i in $@; do
+  case "$i" in
+    -h|--help)
+      echo "Usage: $0 <option> [clean]"
+      echo "                    run all tests"
+      echo "  clean             clean all test directories"
+      echo
+      echo "Options:"
+      echo "  -h, --help        display this help message"
+      echo
+      exit 0
+      ;;
+
+    clean)
+      ACTION="clean"
+      ;;
+  esac
+done
+
+case "$ACTION" in
+  test)
+    all_test
+    ;;
+
+  clean)
+    rm -Rf ./gpdasm.project/test
+    ;;
+esac

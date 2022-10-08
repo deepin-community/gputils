@@ -1,0 +1,62 @@
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-11-2012  22:29:36         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;LIST11.ASM
+                      00002 
+                      00003 ;This file is used to check the generation of an INHX16 format file
+                      00004 ;that has data above 7FFF.
+                      00005 
+                      00006 ;;;; Begin: Changed in gputils
+                      00007 ;;;;    list    p=17c44, f=inhx16
+                      00008         list    p=17c44, f=inhx32
+                      00009 ;;;; End: Changed in gputils
+                      00010 
+0000                  00011         org     0
+0000   1234 2345      00012         data    1234, 2345
+                      00013 
+0020                  00014         org     20
+0020   9999           00015         fill    9999, 100
+                      00016 
+7000                  00017         org     7000
+7000   7890 8901      00018         data    7890, 8901
+                      00019 
+8000                  00020         org     8000
+8000   3456 4567      00021         data    3456, 4567
+                      00022 
+FE00                  00023         org     0fe00
+FE00   5678 6789      00024         data    5678, 6789
+                      00025 
+                      00026         end
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-11-2012  22:29:36         PAGE  2
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__17C44                           00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XX-------------- ---------------- XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0100 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX ---------------- ----------------
+7000 : XX-------------- ---------------- ---------------- ----------------
+8000 : XX-------------- ---------------- ---------------- ----------------
+FE00 : XX-------------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   264
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

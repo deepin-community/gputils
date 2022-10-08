@@ -1,0 +1,85 @@
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-9-2012  19:54:27         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ; LIST8.ASM
+                      00002 
+                      00003 ; This file tests legal usage of the LIST FIXED directive.
+                      00004 
+                      00005 ; LIST should give warning if in column 1
+                      00006         list fixed
+Warning[205]: Found directive in column 1. (list)
+                      00007 list    p=16c71
+                      00008 
+                      00009 ; #DEFINE should not give warnings.
+                      00010 #define Dummy1 1
+                      00011  #define Dummy2 2
+                      00012 
+0000                  00013 Label1                          ; OK
+0000   0000           00014 Label2  Nop                     ; OK
+                      00015 
+                      00016 ;;;; Begin: Changed in gputils
+                      00017 ;;;; Label3                             ; Warning
+                      00018 ;;;; Label4     Nop                     ; Warning
+0001                  00019 Label3                          ; Warning
+0001   0000           00020 Label4  Nop                     ; Warning
+                      00021 ;;;; End: Changed in gputils
+                      00022 
+Warning[203]: Found opcode in column 1. (Nop)
+0002   0000           00023 Nop                             ; Warning
+0003   0000           00024  Nop                            ; OK
+0004                  00025 Nep                             ; OK
+                      00026 ;;;; Begin: Removed in gputils
+                      00027 ;;;; Nep                                ; Warning
+                      00028 ;;;; End: Removed in gputils
+                      00029 
+                      00030 DumbMac Macro
+                      00031         nop
+                      00032         endm
+                      00033 
+Warning[206]: Found call to macro in column 1. (DumbMac)
+                      00034 DumbMac                         ; Warning
+0004   0000               M         nop
+                      00035  DumbMac                        ; OK
+0005   0000               M         nop
+                      00036 
+                      00037 
+Warning[204]: Found pseudo-op in column 1. (Setc)
+0006   1403           00038 Setc                            ; Warning
+0007   1403           00039  Setc                           ; OK
+                      00040 
+                      00041         end
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-9-2012  19:54:27         PAGE  2
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+DumbMac                           
+Dummy1                            1
+Dummy2                            2
+Label1                            00000000
+Label2                            00000000
+Label3                            00000001
+Label4                            00000001
+Nep                               00000004
+__16C71                           00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXX-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:     8
+Program Memory Words Free:  1016
+
+
+Errors   :     0
+Warnings :     4 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

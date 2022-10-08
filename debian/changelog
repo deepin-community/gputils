@@ -1,0 +1,347 @@
+gputils (1.4.0-0.2) unstable; urgency=medium
+
+  * Non maintainer upload by the Reproducible Builds team.
+  * No source change upload to rebuild on buildd with .buildinfo files.
+
+ -- Holger Levsen <holger@debian.org>  Fri, 01 Jan 2021 17:23:06 +0100
+
+gputils (1.4.0-0.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * New upstream release.
+  * upgraded the package source format to 3.0 (quilt)
+  * upgraded Standard-Version and compat
+  * modified d/rules to use standard dh tools
+  * added build-dependencies on quilt, dh-autoreconf
+
+ -- Georges Khaznadar <georgesk@debian.org>  Sat, 09 May 2015 12:33:33 +0200
+
+gputils (0.13.7-1) unstable; urgency=low
+
+  * New upstream release.
+  * New maintainer (Closes: #504473)
+  * Bumped Standards-Version to 3.8.1.
+  * General updates in debian/* to make it lintian clean.
+  * Removed PS/PDF files from gputils due to duplicate with gputils-doc.
+
+ -- Taisuke Yamada <tai@rakugaki.org>  Mon, 16 Mar 2009 08:39:23 +0900
+
+gputils (0.13.6-1) unstable; urgency=low
+
+  * New upstream release.
+  * Bumped Standards-Version to 3.8.0 (no changes).
+
+ -- Aurelien Jarno <aurel32@debian.org>  Fri, 13 Jun 2008 05:40:42 +0200
+
+gputils (0.13.5-2) unstable; urgency=low
+
+  * Split architecture independent files into separate packages as suggested
+    by lintian.
+  * Fix debian/copyright.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sun, 02 Mar 2008 19:46:39 +0100
+
+gputils (0.13.5-1) unstable; urgency=low
+
+  * New upstream version. 
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sat, 29 Dec 2007 21:55:25 +0100
+
+gputils (0.13.4-1) unstable; urgency=low
+
+  * New upstream version.
+    - Fixed 18xx config bug when config is the last section (closes: #305547).
+  * Bumped Standards-Version to 3.7.2 (no changes).
+
+ -- Aurelien Jarno <aurel32@debian.org>  Mon,  4 Sep 2006 11:05:06 +0200
+
+gputils (0.13.3-1) unstable; urgency=low
+
+  * New upstream version. 
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sat,  6 Aug 2005 21:46:28 +0200
+
+gputils (0.13.1-1) unstable; urgency=low
+
+  * New upstream version. 
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sat, 16 Apr 2005 01:00:23 +0200
+
+gputils (0.13.0-2) unstable; urgency=low
+
+  * Fixed RELOCT_BRA relocation (closes: bug#299011).
+
+ -- Aurelien Jarno <aurel32@debian.org>  Tue, 29 Mar 2005 09:06:11 +0200
+
+gputils (0.13.0-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Thu,  6 Jan 2005 14:45:43 +0100
+
+gputils (0.12.4-1) unstable; urgency=low
+
+  * New upstream release. 
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sun, 26 Sep 2004 01:25:15 +0200
+
+gputils (0.12.3-1) unstable; urgency=low
+
+  * New upstream release. 
+
+ -- Aurelien Jarno <aurel32@debian.org>  Thu, 29 Jul 2004 10:28:07 +0200
+
+gputils (0.12.2-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Fri, 16 Jul 2004 11:45:55 +0200
+
+gputils (0.12.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Thu,  6 May 2004 14:37:34 +0200
+
+gputils (0.12.0-2) unstable; urgency=low
+
+  * Conflict with gpal (closes: bug#233727).
+
+ -- Aurelien Jarno <aurel32@debian.org>  Fri, 20 Feb 2004 22:31:57 +0100
+
+gputils (0.12.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sun, 25 Jan 2004 07:46:46 +0100
+
+gputils (0.11.8-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sun, 23 Nov 2003 10:29:53 +0100
+
+gputils (0.11.7-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sat,  1 Nov 2003 23:01:25 +0100
+
+gputils (0.11.6-3) unstable; urgency=low
+
+  * Added missing Build-Depends on bison (Closes: #209255).
+
+ -- Aurelien Jarno <aurel32@debian.org>  Mon,  8 Sep 2003 20:34:20 +0200
+
+gputils (0.11.6-2) unstable; urgency=low
+
+  * Patch: gputils doesn't segfault anymore when there is a parse error on 
+    the first line (closes: bug#204503).
+  * Patch: gplink doesn't fail anymore if .lkr file lacks trailing newline
+    (closes: bug#204252).
+  * Bumped Standards-Version to 3.6.1 (no changes).
+
+ -- Aurelien Jarno <aurel32@debian.org>  Mon,  8 Sep 2003 17:31:01 +0200
+
+gputils (0.11.6-1) unstable; urgency=low
+
+  * New upstream version.
+  * Bumped Standards-Version to 3.6.0 (no changes).
+
+ -- Aurelien Jarno <aurel32@debian.org>  Tue,  5 Aug 2003 18:20:59 +0200
+
+gputils (0.11.5-1) unstable; urgency=low
+
+  * New upstream version. 
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sun, 29 Jun 2003 01:30:40 +0200
+
+gputils (0.11.4-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Mon,  9 Jun 2003 12:03:26 +0200
+
+gputils (0.11.3-2) unstable; urgency=low
+
+  * Don't run configure script twice.
+  * Bumped Standards-Version to 3.5.10 (no changes).
+
+ -- Aurelien Jarno <aurel32@debian.org>  Tue,  3 Jun 2003 01:49:02 +0200
+
+gputils (0.11.3-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sun, 11 May 2003 13:19:02 +0200
+
+gputils (0.11.2-1) unstable; urgency=low
+
+  * New upstream version.
+  * Bumped Standards-Version to 3.5.9 (no changes).
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sat, 26 Apr 2003 18:45:58 +0200
+
+gputils (0.10.6-3) unstable; urgency=low
+
+  * Fixed homepage location in the description.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Thu,  6 Mar 2003 21:11:32 +0100
+
+gputils (0.10.6-2) unstable; urgency=low
+
+  * Bumped standards-version to 3.5.8.
+  * Added homepage to the description.
+  * Uses autotools-dev to update config.{guess,sub}.
+  * Uses debian/compat instead of DH_COMPAT.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Wed,  5 Mar 2003 12:20:21 +0100
+
+gputils (0.10.6-1) unstable; urgency=low
+
+  * New upstream version: 
+    - Added new directives: banksel and pagesel
+    - Changed gpasm default hex file format to inhx32.
+    - Added support for sx, 17xx, and 18xx devices in gpdasm.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Mon, 25 Nov 2002 23:41:53 +0100
+
+gputils (0.10.5-1) unstable; urgency=low
+
+  * New upstream version: Added new processors.
+
+ -- Aurelien Jarno <aurel32@debian.org>  Sun,  3 Nov 2002 20:56:46 +0100
+
+gputils (0.10.4-1) unstable; urgency=low
+
+  * New upstream version. (closes: #165363)
+  * Updated Policy standard compliance to 3.5.7 
+
+ -- Aurelien Jarno <aurel32@debian.org>  Fri, 18 Oct 2002 17:19:58 +0200
+
+gputils (0.10.3-1) unstable; urgency=low
+
+  * New maintainer. (closes: #154102)
+  * New upstream version which includes manpages. (closes: #122292)
+
+ -- Aurelien Jarno <aurel32@debian.org>  Thu, 25 Jul 2002 00:09:11 +0200
+
+gputils (0.10.0-1) unstable; urgency=low
+
+  * New upstream version with new name.
+
+ -- Samuel Tardieu <sam@debian.org>  Mon, 21 Jan 2002 11:14:50 +0100
+
+gpasm (0.9.14-2) unstable; urgency=low
+
+  * Put examples one directory above.
+
+ -- Samuel Tardieu <sam@debian.org>  Mon,  3 Dec 2001 21:08:15 +0100
+
+gpasm (0.9.14-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Samuel Tardieu <sam@debian.org>  Mon,  3 Dec 2001 20:51:45 +0100
+
+gpasm (0.9.0-5) unstable; urgency=low
+
+  * Add flex build dependency, which should be the only one needed.
+    Closes: #121826.
+
+ -- Samuel Tardieu <sam@debian.org>  Fri, 30 Nov 2001 12:23:44 +0100
+
+gpasm (0.9.0-4) unstable; urgency=low
+
+  * Use debhelper instead of yada.
+
+ -- Samuel Tardieu <sam@debian.org>  Thu, 29 Nov 2001 13:39:46 +0100
+
+gpasm (0.9.0-3) unstable; urgency=low
+
+  * Apply patch from John R.Daily <jdaily@progeny.com> that enables build
+    of gpasm on 64 bits machine. Closes: #121412.
+
+ -- Samuel Tardieu <sam@debian.org>  Thu, 29 Nov 2001 13:23:35 +0100
+
+gpasm (0.9.0-2) unstable; urgency=low
+
+  * Fix stupid error in maintainer-contributed manual page. Closes: #85491.
+
+ -- Samuel Tardieu <sam@debian.org>  Sun, 11 Feb 2001 11:30:05 +0100
+
+gpasm (0.9.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Tardieu <sam@debian.org>  Wed, 31 Jan 2001 13:41:13 +0100
+
+gpasm (0.8.14-2) unstable; urgency=low
+
+  * Rebuild with updated yada, to help autobuilder to catch up.
+
+ -- Samuel Tardieu <sam@debian.org>  Fri, 12 Jan 2001 22:39:55 +0100
+
+gpasm (0.8.14-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Tardieu <sam@debian.org>  Thu, 14 Dec 2000 20:29:44 +0100
+
+gpasm (0.8.9-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Tardieu <sam@debian.org>  Sun,  6 Aug 2000 13:36:06 +0200
+
+gpasm (0.0.8-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Tardieu <sam@debian.org>  Fri,  4 Aug 2000 13:47:06 +0200
+
+gpasm (0.0.7-7) unstable; urgency=low
+
+  * Really add ARM support. Closes: #58842.
+
+ -- Samuel Tardieu <sam@debian.org>  Tue, 16 May 2000 12:32:59 +0200
+
+gpasm (0.0.7-6) frozen unstable; urgency=low
+
+  * Add arm into the Architecture field as this package has been reported
+    to work fine on those machines. Closes: #58842.
+
+ -- Samuel Tardieu <sam@debian.org>  Tue, 28 Mar 2000 14:59:36 +0200
+
+gpasm (0.0.7-5) unstable; urgency=low
+
+  * This program has obviously be written with 32 bits architectures in mind.
+    Exclude alpha from the Arch list for the time being. Closes: #49486.
+
+ -- Samuel Tardieu <sam@debian.org>  Mon,  8 Nov 1999 09:35:26 +0100
+
+gpasm (0.0.7-4) unstable; urgency=low
+
+  * Update standards-version to 3.0.0.
+
+ -- Samuel Tardieu <sam@debian.org>  Wed, 21 Jul 1999 13:38:41 +0200
+
+gpasm (0.0.7-3) unstable; urgency=low
+
+  * Rerun aclocal, automake and autoconf. Closes: Bug#39263.
+  * Use latest YADA version.
+
+ -- Samuel Tardieu <sam@debian.org>  Fri, 11 Jun 1999 18:38:35 +0200
+
+gpasm (0.0.7-2) unstable; urgency=low
+
+  * Add documentation.
+  * Packages converted to YADA.
+
+ -- Samuel Tardieu <sam@debian.org>  Tue,  1 Jun 1999 18:10:15 +0200
+
+gpasm (0.0.7-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Samuel Tardieu <sam@debian.org>  Tue, 29 Dec 1998 17:42:52 +0100

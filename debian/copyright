@@ -1,0 +1,38 @@
+This package was downloaded from http://gputils.sourceforge.net/
+
+Authors:
+  * James Bowman <jamesbowman@users.sourceforge.net>
+  * Craig Franklin <craigfranklin@attbi.com>
+  * Scott Dattalo <scott@dattalo.com>
+  * James Cameron <james.cameron@digital.com>
+  * Stefan Petersen <spe@stacken.kth.se>
+  * Eric Smith <eric@brouhaha.com>
+  * Alessandro Zummo <azummo@ita.flashnet.it>
+  * Andrew Burgess <aab@cichlid.com>
+  * Bruce Stough <sbs@wavefront.com>
+  * Tommy Thorn <thorn@acm.org>
+  * Charlie Krauter <charlie@mother.com>
+  * Carlos Nieves <cnieves@iname.com>
+  * Salvador Tropea <salvador@inti.gov.ar>
+
+Copyright:
+   Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005  James Bowman, Craig Franklin
+
+License:
+  gputils is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  gputils is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with gputils; see the file COPYING.  If not, write to
+  the Free Software Foundation, 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301 USA.
+
+On Debian systems, the complete text of the GNU General Public
+License, version 2, can be found in /usr/share/common-licenses/GPL-2.

@@ -1,0 +1,506 @@
+#!/bin/sh
+
+# test tests gpasm
+# Copyright (C) 2001, 2002, 2003 Craig Franklin
+# Copyright (C) 2012 Borut Razem
+#
+# This file is part of gputils.
+#
+# gputils is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# gputils is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with gputils; see the file COPYING.  If not, write to
+# the Free Software Foundation, 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
+
+# FIXME: This is a poorly written script created from the old set of gpasm
+# tests.  This is temporary.  In the future, dejagnu will be used to replace
+# this script.
+
+####set -vx
+
+# Defines
+DISASM=0
+
+version=1.1
+
+HERE=$(pwd)
+
+HEADER=${HERE}/../../header
+
+# general functions
+
+failures=0
+
+set_toolset()
+{
+  GPVOBIN=${HERE}/../../gputils/gpvo
+  GPDASMBIN=${HERE}/../../gputils/gpdasm
+
+  if [ -n "$1" ]; then
+    TESTDIR=./test_mp
+    TESTOBJDIR=./objtest_mp
+
+    MPPATH=/opt/microchip/mplabx/mpasmx
+    MPASMBIN=${MPPATH}/mpasmx
+
+    XXASMBIN=${MPASMBIN}
+    XXASM_Q=${MPASMBIN} 
+    XXASM_QC="${MPASMBIN} -o"
+    XXHEXEXT=.HEX
+    XXOBJEXT=.O
+  else
+    TESTDIR=./test
+    TESTOBJDIR=./objtest
+
+    GPPATH=${HERE}/../..
+    GPASMBIN=${GPPATH}/gpasm/gpasm
+
+    XXASMBIN=${GPASMBIN}
+    XXASM_Q="${GPASMBIN} --mpasm-compatible -q -I ${HEADER}"
+    XXASM_QC="${GPASMBIN} --mpasm-compatible -q -c -I ${HEADER}"
+    XXHEXEXT=.hex
+    XXOBJEXT=.o
+  fi
+}
+
+testfailed()
+{
+  echo "TEST FAILED"
+  failures=$((failures+1))
+}
+
+binexists()
+{
+  # Test syntax.
+  if [ $# = 0 ] ; then
+    echo "Usage: binexists {program}"
+    return 1
+  fi
+  echo "testing for $1"
+  if ! test -e $1; then
+    echo "$1 not found.  Aborting."
+    return 1
+  else
+    $1 -v
+    echo "executable found."
+    echo
+    return 0
+  fi
+}
+
+printbanner()
+{
+  # Test syntax.
+  if [ $# = 0 ] ; then
+    echo "Usage: printbanner {message}"
+    return 1
+  fi
+  echo "-----------------------------------------------------------"
+  echo "$1"
+  echo "-----------------------------------------------------------"
+  echo
+  return 0
+}
+
+printversion() 
+{
+  printbanner " gptest v$version - gputils test script."
+  return 0
+}
+
+printheader()
+{
+  printversion
+  echo "NAME:      $NAME"
+  echo "DATE:      $(date +%x)"
+  echo "TIME:      $(date +%r)"
+  echo "HOST:      $(hostname)"
+  echo "HOST TYPE: $(uname -m)"
+  echo "HOST OS:   $(uname -o)"
+  echo
+  return 0
+}
+
+verbose()
+{
+  echo "$@"
+  "$@"
+}
+
+verbose_o()
+{
+  local out=$1
+
+  shift
+  echo "$@" '>' $out
+  "$@" > $out
+}
+
+disass()
+{
+  verbose_o "$2" $GPDASMBIN --strict -s -p $3 "$1"
+}
+
+get_processor()
+{
+  expr "$(grep -i 'list\s\s*p\s*=' $1)" : '.*[pP]\s*=\s*\([^ ,]*\)' || expr "$(grep -i '\s\s*processor' $1)" : '.*[pP][rR][oO][cC][eE][sS][sS][oO][rR]\s\s*\([^ ]*\)'
+}
+
+get_hex_format()
+{
+  expr "$(../../$GPDASMBIN -s -i -p $2 "$1" | grep 'hex file format: ')" : 'hex file format:\s*\(.*\)'
+}
+
+# gpasm test functions
+
+test_gpasm_sub()
+{
+  local tested=0 compiled=0 passed=0 errortested=0 notcompiled=0 processor
+
+  #Test syntax.
+  if [ $# = 0 ] ; then
+    echo "Usage: test_gpasm_sub {subdirectory}"
+    return 1
+  fi
+
+  if ! test -d $1; then
+    echo "$1 not found.  Aborting."
+    return 1
+  fi
+
+  if test $1 = "old" ; then
+    echo "$1 is a special test directory.  Aborting."
+    return 1
+  fi
+
+  printbanner "Running ./$1 gpasm tests"
+
+  cd $1
+
+  # create the test directory if it doesn't already exist
+  test -d $TESTDIR || mkdir $TESTDIR || exit 1
+  cd $TESTDIR
+  rm -f *.asm *.inc
+  cp ../asmfiles/* .
+
+  # test all of the asm files
+  for x in *.asm
+    do
+      # split the base file name from the extension
+      basefilename="${x%%.asm}"
+      echo "To be overwritten or removed" > "$basefilename.hex"
+      if test -e "../hexfiles/$basefilename.hex" -o \( -e "../hexfiles/$basefilename.hxl" -a -e "../hexfiles/$basefilename.hxh" \); then
+        # a hex file exists so these files must not have errors
+        tested=$((tested+1))
+        echo "Compiling $1/asmfiles/$x"
+        if verbose $XXASM_Q "$basefilename.asm" ; then
+          if test -e "../hexfiles/$basefilename.hex" ; then
+            compiled=$((compiled+1))
+            if diff -s -u "../hexfiles/$basefilename.hex" "$basefilename${XXHEXEXT}" ; then
+              passed=$((passed+1))
+              echo "$basefilename.asm tested successfully"
+              if test $DISASM -eq 1 ; then
+                processor="$(get_processor $x)"
+                if test "$(expr $processor : 'EEPROM')" = 0; then
+                  disass "$basefilename${XXHEXEXT}" "${basefilename}_dasm.asm" $processor
+                  verbose $GPASMBIN -mpasm-compatible -q -I $HEADER -a  $(get_hex_format "$basefilename${XXHEXEXT}" $processor) "${basefilename}_dasm.asm"
+                  diff -s -u "$basefilename${XXHEXEXT}" "${basefilename}_dasm${XXHEXEXT}"
+                fi
+              fi
+            else
+              echo "Files $1/hexfiles/$basefilename.hex and $basefilename${XXHEXEXT} differ"
+            fi
+          else
+            if test -e "../hexfiles/$basefilename.hxl" -a -e "../hexfiles/$basefilename.hxh" ; then
+              compiled=$((compiled+1))
+              if diff -s -u "../hexfiles/$basefilename.hxl" "$basefilename.hxl" && diff -s -u "../hexfiles/$basefilename.hxh" "$basefilename.hxh" ; then
+                passed=$((passed+1))
+                echo "$basefilename.asm tested successfully"
+                # TODO: how to disassemble HXL and HXH???
+                #
+                #if test $DISASM -eq 1 ; then
+                #  processor="$(get_processor $x)"
+                #  if test "$(expr $processor : 'EEPROM')" = 0; then
+                #    disass "$basefilename${XXHEXEXT}" "${basefilename}_dasm.asm" $processor
+                #    verbose $GPASMBIN -mpasm-compatible -q -I $HEADER -a  $(get_hex_format "$basefilename${XXHEXEXT}" $processor) "${basefilename}_dasm.asm"
+                #    diff -s -u "$basefilename${XXHEXEXT}" "${basefilename}_dasm${XXHEXEXT}"
+                #  fi
+                #fi
+              else
+                echo "Files $1/hexfiles/$basefilename.hxl and $basefilename.hxl or $1/hexfiles/$basefilename.hxl and $basefilename.hxh differ"
+              fi
+            else
+              echo "Files $1/hexfiles/$basefilename.hex and $basefilename${XXHEXEXT} differ"
+            fi
+          fi
+        else
+          err=$?
+          if test -e "$basefilename${XXHEXEXT}" ; then
+            echo "$basefilename.asm failed with exit code $err, and failed to clean up ${XXHEXEXT} file"
+          else
+            echo "$basefilename.asm failed with exit code $err"
+          fi
+        fi
+      else
+        # a hex file doesn't exit so these files must have intentional
+        # errors
+        errortested=$((errortested+1))
+        echo "Compiling $1/asmfiles/$x"
+        if verbose $XXASM_Q "$basefilename.asm" ; then
+          if test -e "$basefilename${XXHEXEXT}" ; then
+            echo "$basefilename.asm failed to generate an error"
+          else
+            echo "$basefilename.asm failed to compile, but exit code was ok"
+          fi
+        else
+          if test -e "$basefilename${XXHEXEXT}" ; then
+            echo "$basefilename.asm failed to remove ${XXHEXEXT} file"
+          else
+            notcompiled=$((notcompiled+1))
+            echo "$basefilename.asm tested successfully"
+          fi
+        fi
+      fi
+      echo
+    done
+  cd ..
+  cd ..
+  printbanner "./$1 testing complete"
+  echo "$tested files tested without intentional errors"
+  echo "$compiled compiled without errors"
+  echo "$passed generated identical hex files"
+  echo
+  echo "$errortested files tested with intentional errors"
+  echo "$notcompiled generated errors during compilation"
+  echo
+  if ! test $tested -eq $passed; then
+    return 1
+  elif ! test $errortested -eq $notcompiled; then
+    return 1
+  else
+    return 0
+  fi
+}
+
+test_gpasm_obj()
+{
+  local tested=0 compiled=0 passed=0 errortested=0 notcompiled=0
+
+  #Test syntax.
+  if [ $# = 0 ] ; then
+    echo "Usage: test_gpasm_obj {subdirectory}"
+    return 1
+  fi
+
+  if ! test -d $1; then
+    echo "$1 not found.  Aborting."
+    return 1
+  fi
+
+  if test $1 = "old" ; then
+    echo "$1 is a special test directory.  Aborting."
+    return 1
+  fi
+
+  printbanner "Running ./$1 gpasm object tests"
+
+  cd $1
+
+  # create the test directory if it doesn't already exist
+  test -d $TESTOBJDIR || mkdir $TESTOBJDIR || exit 1
+  cd $TESTOBJDIR
+  rm -f *.asm *.inc
+  cp ../objasm/* .
+
+  # test all of the asm files
+  for x in *.asm
+    do
+      # split the base file name from the extension
+      basefilename="${x%%.asm}"
+      echo "To be overwritten or removed" > "$basefilename${XXOBJEXT}"
+      if test -e "../objfiles/$basefilename.o" ; then
+        # a object file exists so these files must not have errors
+        tested=$((tested+1))
+        echo "Compiling $1/objasm/$basefilename.asm"
+        if verbose $XXASM_QC "$basefilename.asm" ; then
+          if test -e "$basefilename${XXOBJEXT}" ; then
+            compiled=$((compiled+1))
+            $GPVOBIN -n -s -t "$basefilename${XXOBJEXT}" > "$basefilename.dump"
+            $GPVOBIN -n -s -t "../objfiles/$basefilename.o" > "$basefilename.orig"
+            if diff -s -u "$basefilename.orig" "$basefilename.dump" ; then
+              passed=$((passed+1))
+              echo "$basefilename.asm tested successfully"
+            else
+              echo "Files $1/objfiles/$basefilename.o and $basefilename${XXOBJEXT} differ"
+            fi
+          else
+            echo "$basefilename.asm failed to compile, and exit code failed to show error"
+          fi
+        else
+          err=$?
+          if test -e "$basefilename.o" ; then
+            echo "$basefilename.asm failed with exit code $err, and failed to clean up ${XXOBJEXT} file"
+          else
+            echo "$basefilename.asm failed with exit code $err"
+          fi
+        fi
+      else
+        # an object file doesn't exit so these files must have intentional
+        # errors
+        errortested=$((errortested+1))
+        echo "Compiling $1/objasm/$basefilename.asm"
+        if verbose $XXASM_QC "$basefilename.asm" ; then
+          if test -e "$basefilename${XXOBJEXT}" ; then
+            echo "$basefilename.asm failed to generate an error"
+          else
+            echo "$basefilename.asm failed to compile, but exit code was ok"
+          fi
+        else
+          if test -e "$basefilename${XXOBJEXT}" ; then
+            echo "$basefilename.asm failed to remove ${XXOBJEXT} file"
+          else
+            notcompiled=$((notcompiled+1))
+            echo "$basefilename.asm tested successfully"
+          fi
+        fi
+      fi
+      echo
+    done
+  cd ..
+  cd ..
+  printbanner "./$1 object testing complete"
+  echo "$tested files tested without intentional errors"
+  echo "$compiled compiled without errors"
+  echo "$passed generated identical object files"
+  echo
+  echo "$errortested files tested with intentional errors"
+  echo "$notcompiled generated errors during compilation"
+  echo
+  if ! test $tested -eq $passed; then
+    return 1
+  elif ! test $errortested -eq $notcompiled; then
+    return 1
+  else
+    return 0
+  fi
+}
+
+test_gpasm_old()
+{
+  printbanner "Running old gpasm tests..."
+  cd gpasm.old
+  ./testall clean || testfailed
+  ./testall all || testfailed
+  cd ..
+  echo
+  printbanner "old gpasm testing successful"
+  return 0
+}
+
+test_gpasm()
+{
+  printbanner "Start of gpasm testing"
+  if binexists $XXASMBIN && binexists $GPVOBIN ; then
+    test_gpasm_old || testfailed
+    test_gpasm_sub gpasm.project || testfailed
+    test_gpasm_sub gpasm.mchip
+    test_gpasm_obj gpasm.project || testfailed
+    test_gpasm_obj gpasm.mchip
+    echo
+    if [ $failures -eq 0 ] ; then
+        printbanner "gpasm testing successful"
+    else
+        printbanner "$failures test sets failed"
+        return 1
+    fi
+  fi
+}
+
+# top level
+if [ ! $1 ]; then
+  echo "Not enough arguments. Try \"$0 help\" for help."
+  exit 1
+fi
+
+for i in $@
+do
+  case "$i" in
+    -h | --help)
+      printversion
+      echo "Usage: $0 <option> all | clean"
+      echo "  all               run all tests"
+      echo "  clean             clean all test directories"
+      echo "Options:"
+      echo "  -h, --help        display this help message"
+      echo "  -d, --disasm      disassemble and reassemble the assembled hex file"
+      echo "  -m                use Microchip toolset"
+      echo
+      exit 0
+      ;;
+    -d | disasm)
+      DISASM=1
+      ;;
+    -m)
+      MP=1
+      ;;
+    all)
+      if test -n "$ACTION"; then
+        echo "$0: Multiple actions not supported. Try \"$0 help\" for help."
+        exit 0
+      fi
+      ACTION=ALL
+      ;;
+    clean)
+      if test -n "$ACTION"; then
+        echo "$0: Multiple actions not supported. Try \"$0 help\" for help."
+        exit 0
+      fi
+      ACTION=CLEAN
+      ;;
+    *)
+      echo "$0: Invalid argument. Try \"$0 help\" for help."
+      exit 1
+  esac
+done
+
+case "$ACTION" in
+  ALL)
+    set_toolset $MP
+    printheader
+    if ! test_gpasm; then
+      exit 1
+    else
+      printbanner "All testing sucessful"
+    fi
+    exit 0
+    ;;
+  CLEAN)
+    if [ -n "$MP" ]; then
+      rm -Rf ./gpasm.mchip/test_mp
+      rm -Rf ./gpasm.project/test_mp
+      rm -Rf ./gpasm.project/objtest_mp
+    else
+      rm -Rf ./gpasm.mchip/test
+      rm -Rf ./gpasm.mchip/objtest
+      rm -Rf ./gpasm.project/test
+      rm -Rf ./gpasm.project/objtest
+    fi
+    cd gpasm.old
+    ./testall clean
+    cd ..
+    ;;
+  *)
+    echo "$0: No action defined Try \"$0 help\" for help."
+    exit 1
+esac
+
+exit 0

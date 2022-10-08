@@ -1,0 +1,208 @@
+MPASM 03.20.02 Released      MACRO_~2.ASM   11-22-2002  11:18:06         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ; This file tests macro expansion.
+                      00002 
+                      00003        list p=16c84
+                      00004 
+                      00005 ; define the macros used in the test
+                      00006 
+                      00007 #include "macro.inc"
+                      00001 
+                      00002 
+                      00003 test3 macro
+                      00004       movlw 5
+                      00005       movlw 4
+                      00006       nest
+                      00007       movlw 1
+                      00008       endm
+                      00009 
+                      00010 
+                      00008 
+                      00009 nest   macro
+                      00010        movlw 0xf
+                      00011        endm
+                      00012 
+                      00013 ; nested macros
+                      00014 test1  macro
+                      00015        local label2
+                      00016        movlw 2
+                      00017 label2
+                      00018        movlw 3
+                      00019        ; this is a comment
+                      00020        nest
+                      00021        movlw 4
+                      00022        movlw 5
+                      00023        endm
+                      00024 
+                      00025 ; while loop within a macro
+                      00026 test2  macro
+                      00027        movlw 0
+                      00028 j = 1
+                      00029        while (j<5) 
+                      00030          movlw j
+                      00031          movlw j+1
+                      00032 j++
+                      00033        endw
+                      00034        movlw 0
+                      00035        endm
+                      00036 
+                      00037 ; start the test
+                      00038 
+0000                  00039 begin
+                      00040        expand
+                      00041        
+0000   3001           00042        movlw 1
+                      00043        ; test expanded nested macros
+MPASM 03.20.02 Released      MACRO_~2.ASM   11-22-2002  11:18:06         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00044 label1 test1
+  0000                    M        local label2
+0001   3002               M        movlw 2
+0002                      M label2
+0002   3003               M        movlw 3
+                          M        ; this is a comment
+                          M        nest
+0003   300F               M        movlw 0xf
+0004   3004               M        movlw 4
+0005   3005               M        movlw 5
+0006   3000           00045        movlw 0
+                      00046        ; test expand macro with while loop inside
+                      00047        test2
+0007   3000               M        movlw 0
+  00000001                M j = 1
+                          M        while (j<5) 
+0008   3001               M          movlw j
+0009   3002               M          movlw j+1
+  00000002                M j++
+000A   3002               M          movlw j
+000B   3003               M          movlw j+1
+  00000003                M j++
+000C   3003               M          movlw j
+000D   3004               M          movlw j+1
+  00000004                M j++
+000E   3004               M          movlw j
+000F   3005               M          movlw j+1
+  00000005                M j++
+                          M        endw
+0010   3000               M        movlw 0
+0011   3000           00048        movlw 0
+                      00049        ; test expanded nested macros that reside in different source files
+                      00050        test3
+0012   3005               M       movlw 5
+0013   3004               M       movlw 4
+                          M       nest
+0014   300F               M        movlw 0xf
+0015   3001               M       movlw 1
+                      00051 
+0016   3000           00052        movlw 0
+                      00053        noexpand
+                      00054 
+0017   3001           00055        movlw 1
+                      00056        ; test nonexpanded nested macros
+                      00057 label3 test1
+001D   3000           00058        movlw 0
+                      00059        ; test expand macro with while loop inside
+                      00060        test2
+0028   3000           00061        movlw 0
+                      00062        ; test nonexpanded nested macros that reside in different source files
+                      00063        test3
+                      00064 
+                      00065 ; verify that EXPAND and NOEXPAND don't effect while loops
+MPASM 03.20.02 Released      MACRO_~2.ASM   11-22-2002  11:18:06         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00066 
+                      00067        expand
+                      00068 
+  00000000            00069 i = 0
+                      00070        while (i<5) 
+002D   3000           00071          movlw i
+002E   3001           00072          movlw i+1
+  00000001            00073 i++
+002F   3001           00071          movlw i
+0030   3002           00072          movlw i+1
+  00000002            00073 i++
+0031   3002           00071          movlw i
+0032   3003           00072          movlw i+1
+  00000003            00073 i++
+0033   3003           00071          movlw i
+0034   3004           00072          movlw i+1
+  00000004            00073 i++
+0035   3004           00071          movlw i
+0036   3005           00072          movlw i+1
+  00000005            00073 i++
+                      00074        endw
+                      00075 
+0037   3000           00076        movlw 0
+                      00077 
+                      00078        noexpand
+                      00079 
+  00000000            00080 i = 0
+                      00081        while (i<5) 
+0038   3000           00082          movlw i
+0039   3001           00083          movlw i+1
+  00000001            00084 i++
+003A   3001           00082          movlw i
+003B   3002           00083          movlw i+1
+  00000002            00084 i++
+003C   3002           00082          movlw i
+003D   3003           00083          movlw i+1
+  00000003            00084 i++
+003E   3003           00082          movlw i
+003F   3004           00083          movlw i+1
+  00000004            00084 i++
+0040   3004           00082          movlw i
+0041   3005           00083          movlw i+1
+  00000005            00084 i++
+                      00085        endw
+                      00086 
+                      00087        expand
+                      00088 
+0042   2800           00089        goto begin
+                      00090 
+                      00091        end
+MPASM 03.20.02 Released      MACRO_~2.ASM   11-22-2002  11:18:06         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__16C84                           00000001
+begin                             00000000
+i                                 00000005
+j                                 00000005
+label1                            00000001
+label3                            00000018
+nest                              
+test1                             
+test2                             
+test3                             
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXX------------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    67
+Program Memory Words Free:   957
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

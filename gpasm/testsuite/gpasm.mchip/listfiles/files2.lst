@@ -1,0 +1,149 @@
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-7-2012  14:59:25         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ; FILES.ASM
+                      00002 
+                      00003 ; This file tests the generation of the various output files.  If you
+                      00004 ; are generating an object file, also assemble with the option /dMakeObj.
+                      00005 
+                      00006         LIST    P=16C54
+                      00007 
+                      00008 #define Def1    1
+                      00009 
+                      00010 #ifdef MakeObj
+                      00011         CODE
+                      00012 #endif
+                      00013 
+0000                  00014 Label1
+                      00015 
+                      00016 #ifdef MakeObj
+                      00017         EXTERN          Extern1
+                      00018 Global1 = 1
+                      00019 Global2 = 2
+                      00020         GLOBAL          Global1, Global2
+                      00021         DATA            Extern1, Global1, Global2
+                      00022 #endif
+                      00023 
+0000                  00024 Label2
+                      00025 
+                      00026 MyMac   MACRO   Label, Num
+                      00027         LOCAL   MacLoc=Num
+                      00028         WHILE MacLoc > 0
+                      00029 Label#v(MacLoc) DATA    Num, MacLoc
+                      00030 ;;;; Begin: Changed in gputils
+                      00031 ;;;;       MacLoc--
+                      00032 MacLoc--
+                      00033 ;;;; End: Changed in gputils
+                      00034         ENDW
+                      00035         ENDM
+                      00036 
+                      00037 
+  0111                00038         CONSTANT        Const1=111, Const2=222
+  0000                00039         VARIABLE        Var1, Var2 = 22
+                      00040 
+                      00041 ;;;; Begin: Changed in gputils
+                      00042 ;;;;    Var3 = 33
+  00000033            00043 Var3 = 33
+                      00044 ;;;; End: Changed in gputils
+                      00045 
+0000   0001           00046         DATA    Def1
+0001   0111 0222      00047         DATA    Const1, Const2
+0003   0000 0022 0033 00048         DATA    Var1, Var2, Var3
+                      00049 
+                      00050 ;;;; Begin: Changed in gputils
+                      00051 ;;;;    Var3++
+  00000034            00052 Var3++
+                      00053 ;;;; End: Changed in gputils
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-7-2012  14:59:25         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0006   0034           00054         DATA    Var3
+                      00055 
+0007                  00056 Label3
+                      00057 
+                      00058         MyMac   CallOne, 3
+  0003                    M         LOCAL   MacLoc=3
+                          M         WHILE MacLoc > 0
+0007   0003 0003          M CallOne3        DATA    3,   MacLoc
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       MacLoc--
+  00000002                M MacLoc--
+                          M ;;;; End: Changed in gputils
+0009   0003 0002          M CallOne2        DATA    3,   MacLoc
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       MacLoc--
+  00000001                M MacLoc--
+                          M ;;;; End: Changed in gputils
+000B   0003 0001          M CallOne1        DATA    3,   MacLoc
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       MacLoc--
+  00000000                M MacLoc--
+                          M ;;;; End: Changed in gputils
+                          M         ENDW
+                      00059         MyMac   CallTwo, 2
+  0002                    M         LOCAL   MacLoc=2
+                          M         WHILE MacLoc > 0
+000D   0002 0002          M CallTwo2        DATA    2,   MacLoc
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       MacLoc--
+  00000001                M MacLoc--
+                          M ;;;; End: Changed in gputils
+000F   0002 0001          M CallTwo1        DATA    2,   MacLoc
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       MacLoc--
+  00000000                M MacLoc--
+                          M ;;;; End: Changed in gputils
+                          M         ENDW
+                      00060 
+                      00061 ;       ERROR   "This is my error message"
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0011   01C0           00062         ADDWF   0x20, 0                 ; Generates a warning
+Message[301]: MESSAGE: ("This is my message)
+                      00063         MESSG   "This is my message
+                      00064 
+                      00065         END
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-7-2012  14:59:25         PAGE  3
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CallOne1                          0000000B
+CallOne2                          00000009
+CallOne3                          00000007
+CallTwo1                          0000000F
+CallTwo2                          0000000D
+Const1                            00000111
+Const2                            00000222
+Def1                              1
+Label1                            00000000
+Label2                            00000000
+Label3                            00000007
+MyMac                             
+Var1                              00000000
+Var2                              00000022
+Var3                              00000034
+__16C54                           00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XX-------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    18
+Program Memory Words Free:   494
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     2 reported,     0 suppressed
+
+

@@ -1,0 +1,48 @@
+MPASM 03.20.02 Released      MAC_LA~1.ASM   11-22-2002  11:18:06         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ; Bug #433291 test file
+                      00002 
+                      00003      list p=16c84
+                      00004 
+                      00005 failed macro 
+                      00006        movlw 2
+                      00007        list
+                      00008        endm
+                      00009 
+0000   3001           00010        movlw 1
+                      00011 label1 failed
+0001   3002               M        movlw 2
+                          M        list
+0002   3003           00012        movlw 3
+                      00013      
+                      00014        end
+MPASM 03.20.02 Released      MAC_LA~1.ASM   11-22-2002  11:18:06         PAGE  2
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__16C84                           00000001
+failed                            
+label1                            00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXX------------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:     3
+Program Memory Words Free:  1021
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

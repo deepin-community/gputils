@@ -1,0 +1,11 @@
+Document: gputils
+Title: GNU PIC utilities
+Author: James Bowman
+Abstract: GNU PIC assembler, disassembler, and other utilities
+Section: Science/Electronics
+
+Format: pdf
+Files: /usr/share/doc/gputils-doc/gputils.pdf.gz
+
+Format: postscript
+Files: /usr/share/doc/gputils-doc/gputils.ps.gz

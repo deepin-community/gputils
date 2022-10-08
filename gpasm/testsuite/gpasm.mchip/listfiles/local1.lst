@@ -1,0 +1,173 @@
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-3-2012  16:51:21         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ; LOCAL1.ASM
+                      00002 
+                      00003 ; This file tests legal usage of the LOCAL and MACRO-EXITM-ENDM
+                      00004 ; directives.
+                      00005 
+                      00006         LIST    P=16C54
+                      00007 
+                      00008 Mac1    MACRO
+                      00009         NOP
+                      00010         ENDM
+                      00011 
+                      00012 Mac2    MACRO   Param1
+                      00013         IF Param1 > 5
+                      00014            EXITM
+                      00015         ELSE
+                      00016            DATA Param1
+                      00017         ENDIF
+                      00018         ENDM
+                      00019 
+                      00020 Mac3    MACRO   Param1
+                      00021         LOCAL   MyVar
+                      00022 ;;;; Begin: Changed in gputils
+                      00023 ;;;;    MyVar = 1
+                      00024 MyVar = 1
+                      00025 ;;;; End: Changed in gputils
+                      00026         WHILE MyVar <= Param1
+                      00027            DATA MyVar
+                      00028 ;;;; Begin: Changed in gputils
+                      00029 ;;;;       MyVar++
+                      00030 MyVar++
+                      00031 ;;;; End: Changed in gputils
+                      00032         ENDW
+                      00033         ENDM
+                      00034 
+                      00035 
+                      00036         Mac1
+0000   0000               M         NOP
+                      00037         Mac2    1
+                          M         IF 1      > 5
+                          M            EXITM
+                          M         ELSE
+0001   0001               M            DATA 1
+                          M         ENDIF
+                      00038         Mac2    6
+                          M         IF 6      > 5
+                          M            EXITM
+                      00039 
+                      00040 ;;;; Begin: Changed in gputils
+                      00041 ;;;;    MyVar = 2
+  00000002            00042 MyVar = 2
+                      00043 ;;;; End: Changed in gputils
+0002   0002           00044         DATA    MyVar
+                      00045         Mac3    4
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-3-2012  16:51:21         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  0000                    M         LOCAL   MyVar
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;    MyVar = 1
+  00000001                M MyVar = 1
+                          M ;;;; End: Changed in gputils
+                          M         WHILE MyVar <= 4
+0003   0001               M            DATA MyVar
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       MyVar++
+  00000002                M MyVar++
+                          M ;;;; End: Changed in gputils
+0004   0002               M            DATA MyVar
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       MyVar++
+  00000003                M MyVar++
+                          M ;;;; End: Changed in gputils
+0005   0003               M            DATA MyVar
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       MyVar++
+  00000004                M MyVar++
+                          M ;;;; End: Changed in gputils
+0006   0004               M            DATA MyVar
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       MyVar++
+  00000005                M MyVar++
+                          M ;;;; End: Changed in gputils
+                          M         ENDW
+0007   0002           00046         DATA    MyVar   
+                      00047 
+                      00048 ;***** Test for SSR 1756
+                      00049 
+                      00050 Mac4    macro
+                      00051         local   Var = 3
+                      00052         while Var > 0
+                      00053            Mac5 Var
+                      00054 ;;;; Begin: Changed in gputils
+                      00055 ;;;;       Var--
+                      00056 Var--
+                      00057 ;;;; End: Changed in gputils
+                      00058         endw
+                      00059         endm
+                      00060 
+                      00061 Mac5    macro   Value
+                      00062         data    Value
+                      00063         endm
+                      00064 
+                      00065         Mac4
+  0003                    M         local   Var = 3
+                          M         while Var > 0
+                          M            Mac5 Var
+0008   0003               M         data    _5Var
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       Var--
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-3-2012  16:51:21         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000002                M Var--
+                          M ;;;; End: Changed in gputils
+                          M            Mac5 Var
+0009   0002               M         data    _5Var
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       Var--
+  00000001                M Var--
+                          M ;;;; End: Changed in gputils
+                          M            Mac5 Var
+000A   0001               M         data    _5Var
+                          M ;;;; Begin: Changed in gputils
+                          M ;;;;       Var--
+  00000000                M Var--
+                          M ;;;; End: Changed in gputils
+                          M         endw
+                      00066 
+                      00067 ;***** End Test
+                      00068 
+                      00069         END
+MPASM  5.47  /MNT/A1A5D1F2-0B60-42B4-9012-910   12-3-2012  16:51:21         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+Mac1                              
+Mac2                              
+Mac3                              
+Mac4                              
+Mac5                              
+MyVar                             00000002
+__16C54                           00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXX----- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    11
+Program Memory Words Free:   501
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

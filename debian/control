@@ -1,0 +1,43 @@
+Source: gputils
+Maintainer: Taisuke Yamada <tai@rakugaki.org>
+Section: electronics
+Priority: extra
+Build-Depends: debhelper (>= 9), autotools-dev, flex, bison, quilt,
+ dh-autoreconf
+Standards-Version: 3.9.6
+Homepage: http://gputils.sourceforge.net
+
+Package: gputils
+Architecture: any
+Replaces: gpasm
+Provides: gpasm
+Conflicts: gpasm, gpal
+Depends: ${shlibs:Depends}, gputils-common (= ${source:Version})
+Recommends: gputils-doc
+Description: GNU PIC utilities
+ Those utilities for the Microchip PIC microcontrollers family contain
+ an assembler (compatible with MPASM), a disassembler, and other tools.
+
+Package: gputils-common
+Architecture: all
+Replaces: gputils
+Recommends: gputils
+Description: headers and linker scripts for gputils
+ Those utilities for the Microchip PIC microcontrollers family contain
+ an assembler (compatible with MPASM), a disassembler, and other tools.
+ .
+ This package contains the headers and linker scripts needed by 
+ gputils.
+
+Package: gputils-doc
+Architecture: all
+Section: doc
+Replaces: gputils
+Conflicts: gputils (<< 0.13.5-2)
+Suggests: gputils
+Description: documentation for gputils 
+ Those utilities for the Microchip PIC microcontrollers family contain
+ an assembler (compatible with MPASM), a disassembler, and other tools.
+ .
+ This package contains the gputils documentation in Postscript and PDF
+ format.

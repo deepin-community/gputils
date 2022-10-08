@@ -1,0 +1,155 @@
+MPASM 03.20.02 Released        HD556A.ASM   11-21-2002  20:20:27         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ; HD556A.ASM
+                      00002 
+                      00003 ; This file tests header file usage for the specified processor.
+                      00004 
+Error[132]  : Unknown processor (16C556A)
+                      00005         LIST    P=16C556A
+Error[105]  : Cannot open file (Include File "P16C556A.INC" not found)
+                      00006         INCLUDE "P16C556A.INC"
+                      00007 
+Error[131]  : Processor type is undefined
+                      00008         DATA    _CP_ALL, 0X00CF
+Error[131]  : Processor type is undefined
+                      00009         DATA    _CP_50, 0X15DF
+Error[131]  : Processor type is undefined
+                      00010         DATA    _CP_OFF, 0X3FFF
+Error[131]  : Processor type is undefined
+                      00011         DATA    _PWRTE_OFF, 0X3FFF
+Error[131]  : Processor type is undefined
+                      00012         DATA    _PWRTE_ON, 0x3FF7       ; This changes per device
+Error[131]  : Processor type is undefined
+                      00013         DATA    _WDT_ON, 0X3FFF
+Error[131]  : Processor type is undefined
+                      00014         DATA    _WDT_OFF, 0X3FFB
+Error[131]  : Processor type is undefined
+                      00015         DATA    _LP_OSC, 0X3FFC
+Error[131]  : Processor type is undefined
+                      00016         DATA    _XT_OSC, 0X3FFD
+Error[131]  : Processor type is undefined
+                      00017         DATA    _HS_OSC, 0X3FFE
+Error[131]  : Processor type is undefined
+                      00018         DATA    _RC_OSC, 0X3FFF 
+                      00019 
+Error[131]  : Processor type is undefined
+                      00020         DATA    INDF, 0                 ;Register Files
+Error[131]  : Processor type is undefined
+                      00021         DATA    TMR0, 1
+Error[131]  : Processor type is undefined
+                      00022         DATA    PCL, 2
+Error[131]  : Processor type is undefined
+                      00023         DATA    STATUS, 3
+Error[131]  : Processor type is undefined
+                      00024         DATA    FSR, 4
+Error[131]  : Processor type is undefined
+                      00025         DATA    PORTA, 5
+Error[131]  : Processor type is undefined
+                      00026         DATA    PORTB, 6
+Error[131]  : Processor type is undefined
+                      00027         DATA    PCLATH, 0x0A
+Error[131]  : Processor type is undefined
+                      00028         DATA    INTCON, 0x0B
+Error[131]  : Processor type is undefined
+                      00029         DATA    OPTION_REG, 0x81
+Error[131]  : Processor type is undefined
+MPASM 03.20.02 Released        HD556A.ASM   11-21-2002  20:20:27         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00030         DATA    TRISA, 0X85
+Error[131]  : Processor type is undefined
+                      00031         DATA    TRISB, 0X86
+Error[131]  : Processor type is undefined
+                      00032         DATA    PCON, 0X8E
+                      00033         
+Error[131]  : Processor type is undefined
+                      00034         DATA    NOT_POR, 1              ; PCON
+                      00035 
+                      00036 
+Error[131]  : Processor type is undefined
+                      00037         DATA    GIE, 7                  ; INTCON
+Error[131]  : Processor type is undefined
+                      00038         DATA    T0IE, 5
+Error[131]  : Processor type is undefined
+                      00039         DATA    INTE, 4
+Error[131]  : Processor type is undefined
+                      00040         DATA    RBIE, 3
+Error[131]  : Processor type is undefined
+                      00041         DATA    T0IF, 2
+Error[131]  : Processor type is undefined
+                      00042         DATA    INTF, 1
+Error[131]  : Processor type is undefined
+                      00043         DATA    RBIF, 0 
+                      00044 
+Error[131]  : Processor type is undefined
+                      00045         DATA    NOT_RBPU, 7             ; OPTION
+Error[131]  : Processor type is undefined
+                      00046         DATA    INTEDG, 6
+Error[131]  : Processor type is undefined
+                      00047         DATA    T0CS, 5
+Error[131]  : Processor type is undefined
+                      00048         DATA    T0SE, 4
+Error[131]  : Processor type is undefined
+                      00049         DATA    PSA, 3
+Error[131]  : Processor type is undefined
+                      00050         DATA    PS2, 2
+Error[131]  : Processor type is undefined
+                      00051         DATA    PS1, 1
+Error[131]  : Processor type is undefined
+                      00052         DATA    PS0, 0
+                      00053 
+                      00054 
+Error[131]  : Processor type is undefined
+                      00055         DATA    IRP, 7                  ;STATUS
+Error[131]  : Processor type is undefined
+                      00056         DATA    RP1, 6
+Error[131]  : Processor type is undefined
+                      00057         DATA    RP0, 5
+Error[131]  : Processor type is undefined
+                      00058         DATA    NOT_TO, 4
+Error[131]  : Processor type is undefined
+                      00059         DATA    NOT_PD, 3
+MPASM 03.20.02 Released        HD556A.ASM   11-21-2002  20:20:27         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Error[131]  : Processor type is undefined
+                      00060         DATA    Z, 2
+Error[131]  : Processor type is undefined
+                      00061         DATA    DC, 1
+Error[131]  : Processor type is undefined
+                      00062         DATA    C, 0
+                      00063 
+                      00064         END
+Error[131]  : Processor type is undefined
+MPASM 03.20.02 Released        HD556A.ASM   11-21-2002  20:20:27         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+
+All other memory blocks unused.
+
+Program Memory Words Used:     0
+Program Memory Words Free:     1
+
+
+Errors   :    51
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

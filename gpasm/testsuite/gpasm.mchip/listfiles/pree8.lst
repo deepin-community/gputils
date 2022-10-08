@@ -1,0 +1,45 @@
+MPASM 03.20.02 Released         PREE8.ASM   11-22-2002  16:58:11         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ; PREE8.ASM
+                      00002 
+                      00003 ; This file tests the processor directive.
+                      00004 
+                      00005         PROCESSOR       EEPROM8
+                      00006 
+                      00007         LIST    F=INHX8M
+                      00008 
+                      00009 ;       RETLW   12              ; 0812 = 12-BIT
+                      00010                                 ; 3412 = 14-BIT
+                      00011                                 ; B612 = 16-BIT
+                      00012 
+0000 12 34            00013         DATA    12, 34
+                      00014 
+                      00015         END
+MPASM 03.20.02 Released         PREE8.ASM   11-22-2002  16:58:11         PAGE  2
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__EEPROM8                         00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XX-------------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Memory Bytes Used:     2
+Memory Bytes Free:   126
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+
